@@ -1,0 +1,74 @@
+
+Para desplegar tu aplicación en C# .NET en Google Cloud y hacerla accesible al público, puedes seguir uno de los siguientes métodos, dependiendo de tus necesidades y el tipo de aplicación que estés desarrollando. Aquí te explico dos opciones populares:
+Opción 1: Google App Engine (GAE)
+Google App Engine es una plataforma de Google Cloud para desplegar aplicaciones web con escalabilidad automática. Para .NET, necesitarás usar el entorno flexible.
+    1. Prepara tu Aplicación: Asegúrate de que tu aplicación esté lista para ejecutarse en App Engine. Configura las variables de entorno y cualquier configuración que necesites en appsettings.json.
+    2. Configura App Engine para .NET:
+        ◦ En el archivo raíz de tu aplicación, crea un archivo llamado app.yaml con el siguiente contenido:
+yaml
+Copiar código
+runtime: aspnetcore
+env: flex
+        ◦ Este archivo especifica que App Engine usará el entorno flexible y el runtime de ASP.NET Core.
+    3. Despliega la Aplicación:
+        ◦ Instala la Google Cloud SDK.
+        ◦ Autentícate en tu cuenta de Google Cloud:
+bash
+Copiar código
+gcloud auth login
+        ◦ Establece el proyecto de Google Cloud donde deseas desplegar tu aplicación:
+bash
+Copiar código
+gcloud config set project [YOUR_PROJECT_ID]
+        ◦ Despliega la aplicación ejecutando:
+bash
+Copiar código
+gcloud app deploy
+    4. Acceso Público:
+        ◦ Una vez desplegada, App Engine te proporcionará una URL pública. Puedes acceder a ella y compartirla para que otros puedan usar tu aplicación.
+Opción 2: Google Kubernetes Engine (GKE) con Docker
+Si tu aplicación está en un contenedor Docker, puedes utilizar Google Kubernetes Engine (GKE) para un despliegue más flexible y con control completo sobre la infraestructura.
+    1. Empaqueta tu Aplicación en un Contenedor:
+        ◦ Crea un Dockerfile en tu proyecto de .NET, por ejemplo:
+dockerfile
+Copiar código
+FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS base
+WORKDIR /app
+COPY . .
+EXPOSE 80
+ENTRYPOINT ["dotnet", "TuApp.dll"]
+        ◦ Compila la imagen Docker:
+bash
+Copiar código
+docker build -t gcr.io/[YOUR_PROJECT_ID]/tu-app .
+    2. Sube la Imagen a Google Container Registry:
+        ◦ Autentícate en Google Cloud:
+bash
+Copiar código
+gcloud auth configure-docker
+        ◦ Sube la imagen a Google Container Registry:
+bash
+Copiar código
+docker push gcr.io/[YOUR_PROJECT_ID]/tu-app
+    3. Configura GKE y Despliega:
+        ◦ Crea un clúster en Google Kubernetes Engine desde Google Cloud Console o usando:
+bash
+Copiar código
+gcloud container clusters create tu-cluster
+        ◦ Despliega tu aplicación en el clúster usando un manifiesto de despliegue o desde la línea de comandos.
+    4. Configura un Load Balancer:
+        ◦ Configura un servicio tipo LoadBalancer para hacer que la aplicación sea accesible al público.
+        ◦ Una vez configurado, Google Cloud proporcionará una dirección IP pública que podrás usar para acceder a la aplicación.
+Consejos Adicionales
+    • Certificados SSL: Puedes configurar certificados SSL desde Google Cloud para asegurar la conexión.
+    • Reglas de Firewall: Asegúrate de que las reglas de firewall permitan el tráfico entrante al puerto adecuado (por ejemplo, 80 para HTTP o 443 para HTTPS).
+Ambos métodos te permiten desplegar y hacer pública tu aplicación en Google Cloud, con App Engine ofreciendo un despliegue sencillo y escalabilidad automática, mientras que GKE te da mayor control sobre la infraestructura y configuración.
+
+
+
+
+
+https://www.youtube.com/watch?v=guqAxAhTX20
+
+
+https://www.youtube.com/watch?v=tZRam__Bx6o
